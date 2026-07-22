@@ -2,3 +2,9 @@ Build/
 *.o
 *.out
 *.exe
+
+# VSCode
+.vscode/
+
+# Vim
+*.swp
