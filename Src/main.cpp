@@ -1,7 +1,9 @@
 #include "SPSCQueue.h"
 #include <iostream>
 #include <thread>
+#include <mutex>
 
+std::mutex printMutex;
 
 int main()
 {
@@ -12,7 +14,10 @@ int main()
             while (queue.Full() || !queue.Push(i)) {
                 // Queue is full, wait till its false.
             }
-            std::cout << "Produced: " << i << std::endl;
+            {
+                std::lock_guard<std::mutex> lock(printMutex);
+                std::cout << "Produced: " << i << std::endl;
+            }
         }
     });
 
@@ -23,7 +28,10 @@ int main()
             {
                // Queue is empty, wait till its false.
             }
-            std::cout << "Consumed: " << value << std::endl;
+            {
+                std::lock_guard<std::mutex> lock(printMutex);
+                std::cout << "Consumed: " << value << std::endl;
+            }
         }
     });
 
