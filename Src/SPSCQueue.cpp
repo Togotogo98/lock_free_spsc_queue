@@ -1,6 +1,7 @@
 #include "../Include/SPSCQueue.h"
 #include <stdexcept>
-#define MIN_CAPACITY 2
+
+const size_t MIN_CAPACITY = 2;
 
 SPSCQueue::SPSCQueue(size_t capacity) :
     buffer(capacity),
@@ -62,6 +63,6 @@ bool SPSCQueue::Pop(int& value)
 
     size_t nextHead = (currentHead + 1) % capacity;
     head.store(nextHead, std::memory_order_release);
-    
+
     return true;
 }
