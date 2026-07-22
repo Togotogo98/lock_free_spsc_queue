@@ -1,31 +1,34 @@
 #include "SPSCQueue.h"
 #include <iostream>
+#include <thread>
 
 
 int main()
 {
-    SPSCQueue queue(8);
+    SPSCQueue queue(5);
 
-    std::cout << queue.Empty() << std::endl;   // Expected: 1 (true)
-    std::cout << queue.Full() << std::endl;    // Expected: 0 (false)
+    std::thread producer([&queue]() {
+        for (int i = 0; i < 10; ++i) {
+            while (queue.Full() || !queue.Push(i)) {
+                // Queue is full, wait till its false.
+            }
+            std::cout << "Produced: " << i << std::endl;
+        }
+    });
 
-    queue.Push(10);
-    queue.Push(20);
-    queue.Push(30);
+    std::thread consumer([&queue]() {
+        for (int i = 0; i < 10; ++i) {
+            int value;
+            while (queue.Empty() || !queue.Pop(value)) 
+            {
+               // Queue is empty, wait till its false.
+            }
+            std::cout << "Consumed: " << value << std::endl;
+        }
+    });
 
-    int value;
-
-    queue.Pop(value);
-    std::cout << value << std::endl;
-
-    queue.Pop(value);
-    std::cout << value << std::endl;
-
-    queue.Pop(value);
-    std::cout << value << std::endl;
-
-    /* check if queue is empty */
-    std::cout << queue.Empty() << std::endl;   // Expected: 1 (true)
+    producer.join();
+    consumer.join();
 
     return 0;
 }

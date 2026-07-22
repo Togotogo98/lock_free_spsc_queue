@@ -2,13 +2,14 @@
 
 #include <vector>
 #include <cstddef>
+#include <atomic>
 
 class SPSCQueue
 {
 private:
     std::vector<int> buffer;
-    size_t head; //next element to read
-    size_t tail; //next element to write
+    std::atomic<size_t> head;
+    std::atomic<size_t> tail;
     size_t capacity;
 
 public:
